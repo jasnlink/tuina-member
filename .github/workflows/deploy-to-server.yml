@@ -24,6 +24,7 @@ jobs:
           npm install
           echo "$dev_env_file" > .env
           chmod 600 .env
+          unset CI
           npm run build
           mkdir ~/.ssh
           echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
