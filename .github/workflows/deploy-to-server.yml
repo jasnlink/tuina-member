@@ -18,7 +18,7 @@ jobs:
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
           dev_env_file: ${{ secrets.DEV_ENV_FILE }}
-          local_dir: "./build"
+          local_dir: "./build/"
           remote_dir: "/var/www/tuina"
         run: |
           npm install
