@@ -1,0 +1,32 @@
+name: "Deploy to Server"
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.19.0
+      - name: "Build deployment code for standalone"
+        env:
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_port: ${{ secrets.DEPLOY_PORT }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
+          dev_env_file: ${{ secrets.DEV_ENV_FILE }}
+          local_dir: "./build"
+          remote_dir: "/var/www/tuina"
+        run: |
+          npm install
+          echo "$dev_env_file" > .env
+          chmod 600 .env
+          npm run build
+          mkdir ~/.ssh
+          echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
+          chmod 600 ~/.ssh/id_tuina_deploy_key
+          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
+          rm ~/.ssh/id_tuina_deploy_key
