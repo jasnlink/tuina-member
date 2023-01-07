@@ -6,15 +6,13 @@ import {
   OutlinedInput,
   Link,
   LinearProgress,
-  TableContainer,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Chip,
   Button,
-  Alert
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  Divider
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import React, { useState, useEffect } from 'react';
@@ -153,24 +151,21 @@ function App() {
                 )}
                 {!!data && (
                   <Grid item xs={12}>
-                    <TableContainer sx={{ pb: '.5rem' }}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell align='center'>No. Membre</TableCell>
-                            <TableCell align='center'>Nom du Membre</TableCell>
-                            <TableCell align='center'>Statut</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <TableRow>
-                            {data.map((cell, index) => (
-                              <TableCell align='center'>{index !== 2 ? cell : cell.trim() === 'Active' ? <Chip label='ACTIF' color='success' /> : <Chip label='INACTIF' color='error' />}</TableCell>
-                            ))}
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                    <Paper disableElevation variant='outlined'>
+                      <List dense>
+                        <ListItem>
+                          <ListItemText sx={{ ml: '.5rem' }} primary='No. Membre' secondary={data[0]} />
+                        </ListItem>
+                        <Divider />
+                        <ListItem>
+                          <ListItemText sx={{ ml: '.5rem' }} primary='Nom du Membre' secondary={data[1]} />
+                        </ListItem>
+                        <Divider />
+                        <ListItem>
+                          <ListItemText sx={{ ml: '.5rem' }} primary='Statut' secondary={data[2].trim() === 'Active' ? <Chip sx={{ mt: '.25rem' }} label='ACTIF' size='small' color='success' /> : <Chip sx={{ mt: '.25rem' }} label='INACTIF' size='small' color='error' />} />
+                        </ListItem>
+                      </List>
+                    </Paper>
                   </Grid>
                 )}
                 <Grid item xs={12}>
