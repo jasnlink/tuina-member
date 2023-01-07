@@ -11,6 +11,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.19.0
+      - name: "Prepare SSH deploy key"
+        run: |
+          mkdir ~/.ssh
+          echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
+          chmod 600 ~/.ssh/id_tuina_deploy_key
       - name: "Build deploy frontend"
         working-directory: ./frontend
         env:
@@ -22,16 +27,12 @@ jobs:
           local_dir: "./build/"
           remote_dir: "/var/www/tuina/public"
         run: |
-          mkdir ~/.ssh
-          echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
-          chmod 600 ~/.ssh/id_tuina_deploy_key
           npm install
           echo "$dev_env_file" > .env
           chmod 600 .env
           unset CI
           npm run build
           rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
-          rm ~/.ssh/id_tuina_deploy_key
       - name: "Build deploy backend"
         working-directory: ./backend
         env:
@@ -43,11 +44,7 @@ jobs:
           local_dir: "./backend/"
           remote_dir: "/var/www/tuina/backend"
         run: |
-          mkdir ~/.ssh
-          echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
-          chmod 600 ~/.ssh/id_tuina_deploy_key
           npm install
           unset CI
           npm run build
           rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
-          rm ~/.ssh/id_tuina_deploy_key
