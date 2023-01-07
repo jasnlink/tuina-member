@@ -32,6 +32,7 @@ jobs:
           chmod 600 .env
           unset CI
           npm run build
+          chmod 600 ~/.ssh/id_tuina_deploy_key
           rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
       - name: "Build deploy backend"
         working-directory: ./backend
@@ -47,4 +48,5 @@ jobs:
           npm install
           unset CI
           npm run build
+          chmod 600 ~/.ssh/id_tuina_deploy_key
           rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
