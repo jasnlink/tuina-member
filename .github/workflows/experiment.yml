@@ -12,9 +12,9 @@ jobs:
         with:
           node-version: 16.19.0
       - name: "Build deployment code for standalone"
-      - run: |
-          pwd
-        working-directory: frontend
-      - run: |
-          pwd
-        working-directory: backend
+        - run: |
+            pwd
+          working-directory: frontend
+        - run: |
+            pwd
+          working-directory: backend

@@ -22,27 +22,27 @@ jobs:
           frontend_remote_dir: "/var/www/tuina/public"
           backend_local_dir: "./backend/"
           backend_remote_dir: "/var/www/tuina/backend"
-      - run: |
-          npm install
-          echo "$dev_env_file" > ./frontend/.env
-          chmod 600 ./frontend/.env
-          unset CI
-          npm run build
-          mkdir ~/.ssh
-          echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
-          chmod 600 ~/.ssh/id_tuina_deploy_key
-          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${frontend_local_dir} ${remote_user}@${remote_host}:${frontend_remote_dir}
-          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${backend_local_dir} ${remote_user}@${remote_host}:${backend_remote_dir}
-          rm ~/.ssh/id_tuina_deploy_key
-      - run: |
-          npm install
-          echo "$dev_env_file" > ./frontend/.env
-          chmod 600 ./frontend/.env
-          unset CI
-          npm run build
-          mkdir ~/.ssh
-          echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
-          chmod 600 ~/.ssh/id_tuina_deploy_key
-          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${frontend_local_dir} ${remote_user}@${remote_host}:${frontend_remote_dir}
-          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${backend_local_dir} ${remote_user}@${remote_host}:${backend_remote_dir}
-          rm ~/.ssh/id_tuina_deploy_key
+        - run: |
+            npm install
+            echo "$dev_env_file" > ./frontend/.env
+            chmod 600 ./frontend/.env
+            unset CI
+            npm run build
+            mkdir ~/.ssh
+            echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
+            chmod 600 ~/.ssh/id_tuina_deploy_key
+            rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${frontend_local_dir} ${remote_user}@${remote_host}:${frontend_remote_dir}
+            rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${backend_local_dir} ${remote_user}@${remote_host}:${backend_remote_dir}
+            rm ~/.ssh/id_tuina_deploy_key
+        - run: |
+            npm install
+            echo "$dev_env_file" > ./frontend/.env
+            chmod 600 ./frontend/.env
+            unset CI
+            npm run build
+            mkdir ~/.ssh
+            echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
+            chmod 600 ~/.ssh/id_tuina_deploy_key
+            rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${frontend_local_dir} ${remote_user}@${remote_host}:${frontend_remote_dir}
+            rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${backend_local_dir} ${remote_user}@${remote_host}:${backend_remote_dir}
+            rm ~/.ssh/id_tuina_deploy_key
