@@ -12,8 +12,8 @@ jobs:
         with:
           node-version: 16.19.0
       - run: |
+          cd frontend
           pwd
-        working-directory: frontend
       - run: |
+          cd backend
           pwd
-        working-directory: backend
