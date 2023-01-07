@@ -13,9 +13,10 @@
   "dependencies": {
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",
+    "csv-string": "^4.1.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mysql": "^2.18.1",
+    "node-fetch": "^3.3.0",
     "nodemon": "^2.0.20"
   }
 }
