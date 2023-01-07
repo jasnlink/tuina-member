@@ -11,28 +11,43 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.19.0
-      - name: "Build deployment code for standalone"
+      - name: "Build deploy frontend"
+        working-directory: ./frontend
         env:
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_port: ${{ secrets.DEPLOY_PORT }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
           dev_env_file: ${{ secrets.DEV_ENV_FILE }}
-          frontend_local_dir: "./build/"
-          frontend_remote_dir: "/var/www/tuina/public"
-          backend_local_dir: "./backend/"
-          backend_remote_dir: "/var/www/tuina/backend"
+          local_dir: "./build/"
+          remote_dir: "/var/www/tuina/public"
         run: |
           mkdir ~/.ssh
           echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
           chmod 600 ~/.ssh/id_tuina_deploy_key
-          cd frontend
           npm install
           echo "$dev_env_file" > .env
           chmod 600 .env
           unset CI
           npm run build
-          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${frontend_local_dir} ${remote_user}@${remote_host}:${frontend_remote_dir}
-          cd ../backend
-          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${backend_local_dir} ${remote_user}@${remote_host}:${backend_remote_dir}
+          rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
           rm ~/.ssh/id_tuina_deploy_key
+        - name: "Build deploy backend"
+          working-directory: ./backend
+          env:
+            remote_host: ${{ secrets.DEPLOY_HOST }}
+            remote_port: ${{ secrets.DEPLOY_PORT }}
+            remote_user: ${{ secrets.DEPLOY_USER }}
+            remote_key: ${{ secrets.DEPLOY_KEY }}
+            dev_env_file: ${{ secrets.DEV_ENV_FILE }}
+            local_dir: "./backend/"
+            remote_dir: "/var/www/tuina/backend"
+          run: |
+            mkdir ~/.ssh
+            echo "$remote_key" > ~/.ssh/id_tuina_deploy_key
+            chmod 600 ~/.ssh/id_tuina_deploy_key
+            npm install
+            unset CI
+            npm run build
+            rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${local_dir} ${remote_user}@${remote_host}:${remote_dir}
+            rm ~/.ssh/id_tuina_deploy_key
