@@ -113,7 +113,7 @@ function App() {
                             mt: '.5rem'
                           }}
                           fullWidth
-                          placeholder='Entrez un nom...'
+                          placeholder='Entrez le nom complet'
                           id='memberSearch'
                           size='small'
                           onChange={(event) => setInputValue(event.target.value)}
@@ -134,7 +134,7 @@ function App() {
                           disabled={!inputValue}
                           type='submit'
                         >
-                          Rechercher
+                          Vérifier
                         </LoadingButton>
                       </Grid>
                     </Grid>
