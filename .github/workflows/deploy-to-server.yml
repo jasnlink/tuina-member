@@ -18,9 +18,9 @@ jobs:
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
           dev_env_file: ${{ secrets.DEV_ENV_FILE }}
-          frontend_local_dir: "~/frontend/build/"
+          frontend_local_dir: "./build/"
           frontend_remote_dir: "/var/www/tuina/public"
-          backend_local_dir: "~/backend/"
+          backend_local_dir: "./backend/"
           backend_remote_dir: "/var/www/tuina/backend"
         run: |
           mkdir ~/.ssh
@@ -33,5 +33,6 @@ jobs:
           unset CI
           npm run build
           rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${frontend_local_dir} ${remote_user}@${remote_host}:${frontend_remote_dir}
+          cd ../backend
           rsync -azvr --delete -e "ssh -p ${remote_port} -i ~/.ssh/id_tuina_deploy_key -o StrictHostKeyChecking=no" ${backend_local_dir} ${remote_user}@${remote_host}:${backend_remote_dir}
           rm ~/.ssh/id_tuina_deploy_key
