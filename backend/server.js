@@ -73,6 +73,6 @@ app.get('/api/search/:s', (req, res) => {
     }
   }
   console.log(search)
-  res.status(404);
-  return res.send('NOT FOUND')
+  res.status(204);
+  return res.send(null)
 });

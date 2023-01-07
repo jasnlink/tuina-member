@@ -5,7 +5,16 @@ import {
   Paper,
   OutlinedInput,
   Link,
-  LinearProgress
+  LinearProgress,
+  TableContainer,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Chip,
+  Button,
+  Alert
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import React, { useState, useEffect } from 'react';
@@ -35,29 +44,42 @@ function App() {
 
   const [inputValue, setInputValue] = useState('');
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  function handleSubmit() {
+  const [data, setData] = useState(null);
+
+  function handleSubmit(event) {
+    event.preventDefault()
     setIsSubmitLoading(true);
     const queryUrl = process.env.REACT_APP_SEARCH_ENDPOINT+'/api/search/'+inputValue
     fetch(queryUrl, {
       method: 'get'
     })
     .then((response) => {
+      setIsSubmitLoading(false);
       if(!response.ok) {
         throw new Error();
       }
-      return response.json()
+      if(response.status === 204) {
+        return null
+      } else {
+        return response.json()
+      }
     })
     .then((data) => {
-      console.log(data)
+      setData(data)
+      setIsSubmitted(true)
     })
     .catch((error) => {
       console.error(error)
       setIsError(true)
     })
-    .finally(() => {
-      setIsSubmitLoading(false);
-    })
+  }
+
+  function handleBack() {
+    setInputValue('')
+    setData(null)
+    setIsSubmitted(false)
   }
 
   return (
@@ -68,49 +90,101 @@ function App() {
         }} variant='outlined'>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant='h5'>Recherchez pour un membre</Typography>
+              <Typography variant='h5'>{!isSubmitted ? 'Rechercher pour un membre' : 'Résultat'}</Typography>
             </Grid>
             {isError && (
-              <Typography>ERROR</Typography>
+              <Grid item xs={12}>
+                <Alert severity="error">Erreur de connexion</Alert>
+              </Grid>
             )}
             {isLoading && (
               <Grid my='1rem' item xs={12}>
                 <LinearProgress />
               </Grid>
             )}
-            {!isLoading && [ !isError && (
+            {!isLoading && [ !isError && [ !isSubmitted && (
               <React.Fragment key={1}>
                 <Grid item xs={12}>
-                  <OutlinedInput
-                    sx={{
-                      mt: '1rem'
-                    }}
-                    fullWidth
-                    placeholder='Entrez un nom...'
-                    id='memberSearch'
-                    size='small'
-                    onChange={(event) => setInputValue(event.target.value)}
-                    value={inputValue}
-                    disabled={isSubmitLoading}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <LoadingButton
-                    sx={{
-                      mt: '.5rem'
-                    }}
-                    variant='contained'
-                    size='large'
-                    fullWidth
-                    disableElevation
-                    loading={isSubmitLoading}
-                    onClick={handleSubmit}
-                  >
-                    Rechercher
-                  </LoadingButton>
+                  <form onSubmit={handleSubmit}>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <OutlinedInput
+                          sx={{
+                            mt: '.5rem'
+                          }}
+                          fullWidth
+                          placeholder='Entrez un nom...'
+                          id='memberSearch'
+                          size='small'
+                          onChange={(event) => setInputValue(event.target.value)}
+                          value={inputValue}
+                          disabled={isSubmitLoading}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <LoadingButton
+                          sx={{
+                            mt: '1rem'
+                          }}
+                          variant='contained'
+                          size='large'
+                          fullWidth
+                          disableElevation
+                          loading={isSubmitLoading}
+                          disabled={!inputValue}
+                          type='submit'
+                        >
+                          Rechercher
+                        </LoadingButton>
+                      </Grid>
+                    </Grid>
+                  </form>
                 </Grid>
               </React.Fragment>
-            )]}
+            )]]}
+            {isSubmitted && (
+              <>
+                {!data && (
+                  <Grid item xs={12}>
+                    <Paper sx={{ py: '1rem' }} disableElevation variant='outlined'>
+                      <Typography textAlign='center' variant='h6'>Aucun résultat pour cette recherche</Typography>
+                    </Paper>
+                  </Grid>
+                )}
+                {!!data && (
+                  <Grid item xs={12}>
+                    <TableContainer sx={{ pb: '.5rem' }}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align='center'>No. Membre</TableCell>
+                            <TableCell align='center'>Nom du Membre</TableCell>
+                            <TableCell align='center'>Statut</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            {data.map((cell, index) => (
+                              <TableCell align='center'>{index !== 2 ? cell : cell.trim() === 'Active' ? <Chip label='ACTIF' color='success' /> : <Chip label='INACTIF' color='error' />}</TableCell>
+                            ))}
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth 
+                    onClick={handleBack}
+                    variant='contained'
+                    disableElevation
+                  >
+                    Retour
+                  </Button>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Paper>
         <Typography variant='caption'>
