@@ -13,7 +13,7 @@ process.env.TZ = 'America/Toronto';
 
 // set port, listen for requests
 const PORT = process.env.PORT || 4500;
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRAdHSStTt3NcBlWru0TTDO5U_YQL93jAvhrjAExiDiEQ6_wFS7i-G6D0odbMUSeCKtTlqKoaTPtJht/pub?output=csv"
+const CSV_URL = "https://docs.google.com/spreadsheets/d/1KWWeBo5LZ8qCjuTW1a_w2tJj8KQr5NWY9hI-LqK2gaQ/export?format=csv"
 
 //express json cors setup
 let app = express();
@@ -41,7 +41,8 @@ app.get('/api/init', async (req, res) => {
   const parsedQuery = await query.text()
   const data = await CSV.parse(parsedQuery)
 
-  memberList = data.slice(2)
+  // skip first row
+  memberList = data.slice(1)
 
   console.log('Loaded member data... Sending response...')
   return res.send('ready')
@@ -52,22 +53,25 @@ app.get('/api/init', async (req, res) => {
 app.get('/api/search/:s', (req, res) => {
 
   console.log('Searching for member data...')
+
+  // error out if member list is not loaded yet by checking the length
   if(!memberList.length) {
     console.log('ERROR... Member list not initialized...')
     res.status(400);
     return res.send('ERROR')
   }
 
+  // get the search param
   let search = req.params['s']
 
+  // replace all whitespace characters
   const regex = /\s*/g;
   let parsedSearch = search.replace(regex, '').toLowerCase()
 
-
   for(let member of memberList) {
-    let parsedMember = member[1].replace(regex, '').toLowerCase()
+    let parsedMember = member[0].replace(regex, '').toLowerCase()
 
-    if(parsedMember.includes(parsedSearch) || parsedMember === parsedSearch) {
+    if(parsedMember === parsedSearch) {
       console.log('found!', member)
       return res.send(member)
     }

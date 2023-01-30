@@ -111,7 +111,7 @@ function App() {
                             mt: '.5rem'
                           }}
                           fullWidth
-                          placeholder='Entrez le nom complet'
+                          placeholder='Entrez le numéro de membre'
                           id='memberSearch'
                           size='small'
                           onChange={(event) => setInputValue(event.target.value)}
@@ -162,7 +162,7 @@ function App() {
                         </ListItem>
                         <Divider />
                         <ListItem>
-                          <ListItemText sx={{ ml: '.5rem' }} primary='Statut' secondary={data[2].trim() === 'Active' ? <Chip sx={{ mt: '.25rem' }} label='ACTIF' size='small' color='success' /> : <Chip sx={{ mt: '.25rem' }} label='INACTIF' size='small' color='error' />} />
+                          <ListItemText sx={{ ml: '.5rem' }} primary='Statut' secondary={data[2].trim() === 'Paid' ? <Chip sx={{ mt: '.25rem' }} label='ACTIF' size='small' color='success' /> : <Chip sx={{ mt: '.25rem' }} label='INACTIF' size='small' color='error' />} />
                         </ListItem>
                       </List>
                     </Paper>
