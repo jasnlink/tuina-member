@@ -145,7 +145,7 @@ function App() {
                 {!data && (
                   <Grid item xs={12}>
                     <Paper sx={{ py: '1rem' }} disableElevation variant='outlined'>
-                      <Typography textAlign='center' variant='h6'>Aucun résultat pour cette recherche</Typography>
+                      <Typography textAlign='center' variant='h6'>Aucun résultat pour votre recherche: {inputValue}</Typography>
                     </Paper>
                   </Grid>
                 )}

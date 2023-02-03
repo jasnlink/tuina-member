@@ -70,8 +70,9 @@ app.get('/api/search/:s', (req, res) => {
 
   for(let member of memberList) {
     let parsedMember = member[0].replace(regex, '').toLowerCase()
+    let parsedMemberName = member[1].replace(regex, '').toLowerCase()
 
-    if(parsedMember === parsedSearch) {
+    if(parsedMember === parsedSearch && parsedMemberName !== '') {
       console.log('found!', member)
       return res.send(member)
     }
