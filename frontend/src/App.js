@@ -182,9 +182,9 @@ function App() {
             )}
           </Grid>
         </Paper>
-        <Typography variant='caption'>
+        {/* <Typography variant='caption'>
             Propulsé par <Link href='https://msmtech.ca' target="_blank" rel="noopener">MSM Technologies</Link>
-        </Typography>
+        </Typography> */}
       </Container>
     </React.Fragment>
   );
